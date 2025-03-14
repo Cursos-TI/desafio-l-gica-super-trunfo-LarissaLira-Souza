@@ -1,43 +1,91 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
-// Desafio Super Trunfo - Países
-// Tema 2 - Comparação das Cartas
-// Este código inicial serve como base para o desenvolvimento do sistema de comparação de cartas de cidades. 
-// Siga os comentários para implementar cada parte do desafio.
+// Estrutura para armazenar os dados das cartas
+typedef struct {
+    char pais[30];
+    unsigned long int populacao;
+    float area;
+    float pib;
+    int pontosTuristicos;
+} Carta;
 
+// Função para exibir o menu e retornar a escolha do jogador
+int exibirMenu(char *mensagem, int atributosDisponiveis[]) {
+    int escolha;
+
+    printf("%s\n", mensagem);
+    if (atributosDisponiveis[0]) printf("1. Populacao\n");
+    if (atributosDisponiveis[1]) printf("2. Area\n");
+    if (atributosDisponiveis[2]) printf("3. PIB\n");
+    if (atributosDisponiveis[3]) printf("4. Pontos Turisticos\n");
+
+    printf("Escolha uma opcao: ");
+    scanf("%d", &escolha);
+
+    if (escolha < 1 || escolha > 4 || !atributosDisponiveis[escolha - 1]) {
+        printf("Opcao invalida! Tente novamente.\n\n");
+        return exibirMenu(mensagem, atributosDisponiveis);
+    }
+
+    atributosDisponiveis[escolha - 1] = 0; // Desabilita o atributo escolhido
+    return escolha;
+}
+
+// Função para realizar a comparação dos atributos
+float obterValorPorAtributo(Carta carta, int atributo) {
+    switch (atributo) {
+        case 1: return carta.populacao;
+        case 2: return carta.area;
+        case 3: return carta.pib;
+        case 4: return carta.pontosTuristicos;
+        default: return 0;
+    }
+}
+
+// Função principal
 int main() {
-    // Definição das variáveis para armazenar as propriedades das cidades
-    // Você pode utilizar o código do primeiro desafio
+    Carta carta1 = {"Brasil", 213000000, 8516000.0, 2.2, 15};
+    Carta carta2 = {"Argentina", 45100000, 2780000.0, 0.5, 10};
 
-    
-    // Cadastro das Cartas:
-    // Implemente a lógica para solicitar ao usuário que insira os dados das cidades
-    // utilizando a função scanf para capturar as entradas.
-    // utilize o código do primeiro desafio
+    int atributosDisponiveis[4] = {1, 1, 1, 1};
+    int atributo1, atributo2;
 
-    // Exemplo:
-    // printf("Digite o código da cidade: ");
-    // scanf("%s", codigo);
-    // 
-    // (Repita para cada propriedade)
+    printf("Comparacao entre as cartas:\n");
+    printf("Carta 1: %s\n", carta1.pais);
+    printf("Carta 2: %s\n\n", carta2.pais);
 
-    // Comparação de Cartas:
-    // Desenvolva a lógica de comparação entre duas cartas.
-    // Utilize estruturas de decisão como if, if-else para comparar atributos como população, área, PIB, etc.
+    // Escolha dos atributos para comparação
+    atributo1 = exibirMenu("Escolha o primeiro atributo para comparacao:", atributosDisponiveis);
+    atributo2 = exibirMenu("Escolha o segundo atributo para comparacao:", atributosDisponiveis);
 
-    // Exemplo:
-    // if (populacaoA > populacaoB) {
-    //     printf("Cidade 1 tem maior população.\n");
-    // } else {
-    //     printf("Cidade 2 tem maior população.\n");
-    // }
+    // Valores dos atributos
+    float valor1A1 = obterValorPorAtributo(carta1, atributo1);
+    float valor2A1 = obterValorPorAtributo(carta2, atributo1);
+    float valor1A2 = obterValorPorAtributo(carta1, atributo2);
+    float valor2A2 = obterValorPorAtributo(carta2, atributo2);
 
-    // Exibição dos Resultados:
-    // Após realizar as comparações, exiba os resultados para o usuário.
-    // Certifique-se de que o sistema mostre claramente qual carta venceu e com base em qual atributo.
+    // Comparação individual
+    int vencedorA1 = (atributo1 == 2) ? (valor1A1 < valor2A1) : (valor1A1 > valor2A1);
+    int vencedorA2 = (atributo2 == 2) ? (valor1A2 < valor2A2) : (valor1A2 > valor2A2);
 
-    // Exemplo:
-    // printf("A cidade vencedora é: %s\n", cidadeVencedora);
+    // Soma dos valores
+    float soma1 = valor1A1 + valor1A2;
+    float soma2 = valor2A1 + valor2A2;
+
+    // Resultado final
+    printf("\nResultados da comparacao:\n");
+    printf("%s: Atributo %d = %.2f, Atributo %d = %.2f, Soma = %.2f\n", carta1.pais, atributo1, valor1A1, atributo2, valor1A2, soma1);
+    printf("%s: Atributo %d = %.2f, Atributo %d = %.2f, Soma = %.2f\n", carta2.pais, atributo1, valor2A1, atributo2, valor2A2, soma2);
+
+    if (soma1 > soma2) {
+        printf("Vencedor: %s\n", carta1.pais);
+    } else if (soma2 > soma1) {
+        printf("Vencedor: %s\n", carta2.pais);
+    } else {
+        printf("Empate!\n");
+    }
 
     return 0;
 }
